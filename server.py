@@ -13,12 +13,22 @@ AWESOMENESS = [
     'oh-so-not-meh', 'brilliant', 'ducky', 'coolio', 'incredible',
     'wonderful', 'smashing', 'lovely']
 
+DISS = [
+    'not awesome', 'not terrific', 'not fantastic', 'not neato', 'not fantabulous', 'not wowza',
+    'not oh-so-not-meh', 'not brilliant', 'not ducky', 'not coolio', 'not incredible',
+    'not wonderful', 'not smashing', 'not lovely']
 
 @app.route('/')
 def start_here():
     """Home page."""
 
-    return "<!doctype html><html>Hi! This is the home page.</html>"
+    return """<!doctype html>
+    <html>
+    <head></head>
+    <body>
+    <a href="http://localhost:5000/hello">Hello</a>
+    </body>
+    </html>"""
 
 
 @app.route('/hello')
@@ -33,8 +43,12 @@ def say_hello():
       </head>
       <body>
         <h1>Hi There!</h1>
-        <form action="/greet">
+        <form action="/diss">
           What's your name? <input type="text" name="person">
+          Want compliment?
+          <input type="radio" name="niceormean" value="nice">
+           Want diss?
+           <input type="radio" name="niceormean" value="mean">
           <input type="submit" value="Submit">
         </form>
       </body>
@@ -42,12 +56,45 @@ def say_hello():
     """
 
 
+@app.route('/diss')
+def diss_person():
+
+  player = request.args.get("person")
+  niceormean = request.args.get("niceormean")
+  compliment = choice(AWESOMENESS)
+  insult = choice(DISS)
+
+  if niceormean == "nice":
+    return f"""
+    <!doctype html>
+    <html>
+      <head>
+        <title>A Compliment</title>
+      </head> 
+      <body>
+        Hi, {player}! I think you're {compliment}!
+      </body>
+    </html>
+    """ 
+  else:
+    return f"""
+    <!doctype html>
+    <html>
+      <head>
+        <title>A Diss</title>
+      </head> 
+      <body>
+        Hi, {player}! I think you're {insult}!
+      </body>
+    </html>
+    """ 
+
 @app.route('/greet')
 def greet_person():
     """Get user by name."""
-
+    
     player = request.args.get("person")
-
+    
     compliment = choice(AWESOMENESS)
 
     return f"""
@@ -55,12 +102,12 @@ def greet_person():
     <html>
       <head>
         <title>A Compliment</title>
-      </head>
+      </head> 
       <body>
         Hi, {player}! I think you're {compliment}!
       </body>
     </html>
-    """
+    """ 
 
 
 if __name__ == '__main__':
